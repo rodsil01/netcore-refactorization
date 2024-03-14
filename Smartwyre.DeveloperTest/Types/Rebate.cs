@@ -1,4 +1,4 @@
-﻿using Smartwyre.DeveloperTest.Services;
+﻿using Smartwyre.DeveloperTest.RebateCalculator;
 
 namespace Smartwyre.DeveloperTest.Types;
 
@@ -22,7 +22,7 @@ public class Rebate
     public decimal Percentage { get; set; }
 
     private IncentiveType _incentiveType;
-    private RebateCalculator _calculator;
+    private RebateCalculator.RebateCalculator _calculator;
 
     public decimal? Calculate(Product product, decimal volume)
     {
@@ -31,11 +31,11 @@ public class Rebate
         return _calculator.Calculate(this, product, volume);
     }
 
-    private static RebateCalculator GetCalculatorFor(IncentiveType incentiveType) => incentiveType switch
+    private static RebateCalculator.RebateCalculator GetCalculatorFor(IncentiveType incentiveType) => incentiveType switch
     {
-        IncentiveType.FixedCashAmount => new FixedCashDebateCalculaotr(),
-        IncentiveType.FixedRateRebate => new FixedRateDebateCalculaotr(),
-        IncentiveType.AmountPerUom => new AmountPerUomDebateCalculaotr(),
+        IncentiveType.FixedCashAmount => new FixedCashAmountRebateCalculator(),
+        IncentiveType.FixedRateRebate => new FixedRateRebateCalculator(),
+        IncentiveType.AmountPerUom => new AmountPerUomRebateCalculator(),
         _ => null
     };
 }

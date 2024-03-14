@@ -36,6 +36,8 @@ public class RebateService : IRebateService
             Success = false
         };
 
+        if (rebate == null) return result;
+
         var rebateAmount = rebate.Calculate(product, volume);
 
         if (rebateAmount.HasValue)
