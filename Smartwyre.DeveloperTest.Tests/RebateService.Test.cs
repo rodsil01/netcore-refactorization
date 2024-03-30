@@ -10,12 +10,15 @@ public class RebateServiceTests
 {
     private readonly Mock<IProductDataStore> _productMockDataStore;
     private readonly Mock<IRebateDataStore> _rebateMockDataStore;
+
+    private readonly IRebateCalculatorService _rebateCalculatorService;
     private readonly RebateService _rebateService;
 
     public RebateServiceTests()
     {
         _productMockDataStore = new Mock<IProductDataStore>();
         _rebateMockDataStore = new Mock<IRebateDataStore>();
+        _rebateCalculatorService = new RebateCalculatorService();
 
         _productMockDataStore.Setup(m => m.GetProduct("product-id")).Returns(new Product
         {
@@ -34,7 +37,7 @@ public class RebateServiceTests
             Incentive = IncentiveType.FixedCashAmount
         });
 
-        _rebateService = new RebateService(_productMockDataStore.Object, _rebateMockDataStore.Object);
+        _rebateService = new RebateService(_productMockDataStore.Object, _rebateMockDataStore.Object, _rebateCalculatorService);
     }
 
     [Fact]

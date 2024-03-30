@@ -7,11 +7,13 @@ public class RebateService : IRebateService
 {
     private readonly IProductDataStore _productDataStore;
     private readonly IRebateDataStore _rebateDataStore;
+    private readonly IRebateCalculatorService _rebateCalculatorService;
 
-    public RebateService(IProductDataStore productDataStore, IRebateDataStore rebateDataStore)
+    public RebateService(IProductDataStore productDataStore, IRebateDataStore rebateDataStore, IRebateCalculatorService rebateCalculatorService)
     {
         _productDataStore = productDataStore;
         _rebateDataStore = rebateDataStore;
+        _rebateCalculatorService = rebateCalculatorService;
     }
 
     public CalculateRebateResult Calculate(CalculateRebateRequest request)
@@ -29,7 +31,7 @@ public class RebateService : IRebateService
         return result;
     }
 
-    private static CalculateRebateResult CalculateRebate(Rebate rebate, Product product, decimal volume)
+    private CalculateRebateResult CalculateRebate(Rebate rebate, Product product, decimal volume)
     {
         var result = new CalculateRebateResult()
         {
@@ -38,7 +40,8 @@ public class RebateService : IRebateService
 
         if (rebate == null) return result;
 
-        var rebateAmount = rebate.Calculate(product, volume);
+        var calculator = _rebateCalculatorService.GetCalculator(rebate.Incentive);
+        var rebateAmount = calculator.Calculate(rebate, product, volume);
 
         if (rebateAmount.HasValue)
         {
